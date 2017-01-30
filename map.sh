@@ -1,12 +1,8 @@
 #!/bin/bash
-
-#$ -N qc_align
-#$ -t 1-22
-#$ -S /bin/bash
-#$ -cwd
-#$ -o job_reports/
-#$ -e job_reports/
-#$ -l h_vmem=8G
+#SBATCH --time=2:00:00
+#SBATCH --mem-per-cpu=8000
+#SBATCH --array=1-22
+#SBATCH -p sysgen
 
 # This script will take a binary plink file and:
 
@@ -15,14 +11,13 @@
 # (For the SNPs that don't have a genetic position, SHAPEIT internally
 # determines its genetic position using linear interpolation)
 
-set -e
-
-if [[ -n "${1}" ]]; then
-  echo ${1}
-  SGE_TASK_ID=${1}
+# set -e
+if [ -n "${1}" ]; then
+    SLURM_ARRAY_TASK_ID=${1}
 fi
 
-chr=${SGE_TASK_ID}
+chr=${SLURM_ARRAY_TASK_ID}
+
 wd=`pwd`"/"
 
 source parameters.sh
